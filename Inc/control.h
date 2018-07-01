@@ -11,23 +11,26 @@
 
 typedef struct
 {
-  uint32_t CellCanId; /*分配给单元体的CANid*/
-  uint16_t CelAddr;   /*给单元体的编号*/
-  RxDataTypedef Rx;   /**/
+  uint32_t CellCanId;   /*分配给单元体的CANid*/
+  uint8_t  CellRow;     /*给单元体的行编号*/
+  uint16_t CellColumn;  /*给单元体的列编号*/
+  uint16_t CellAddr;    /*给单元体的编号（一维）*/
+  RxDataTypedef Rx;     /**/
 }Master_TypeDef;
 
 enum{
-  CELL_NONE           = 0x00,
-  CELL_REQUEST_ENABLE = 0x01, /*使能请求ID*/
-  CELL_REQUEST_ID     = 0x02, /*请求分配ID*/
-  CELL_GET_ID         = 0x03, /*收到ID*/
-  CELL_DELIVER        = 0x04, /*出货命令*/
-  CELL_DELIVER_DONE   = 0x05, /*单元体出货完成*/
+  CELL_NONE = 0U,
+  CELL_REQUEST_ENABLE,          /*使能请求ID*/
+  CELL_REQUEST_ID,              /*请求分配ID*/
+  CELL_ALLOCATE_ONE_LAYER_DONE, /*分配一层完成*/
+  CELL_GET_ID,                  /*收到ID*/
+  CELL_DELIVER,                 /*出货命令*/
+  CELL_DELIVER_DONE,            /*单元体出货完成*/
 };
 
 void Master_init(Master_TypeDef *m);
 void AllocatingIdAndAddr(Master_TypeDef *m);
-void Deliver(uint16_t addr, uint8_t n);
+void Deliver(uint8_t row, uint16_t col, uint8_t n);
 void DoNothing(void);
 void OnDataReceive(void);
 #endif

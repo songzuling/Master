@@ -391,7 +391,8 @@ static void CAN_Filter_Init(void)
   return;
 }
 
-uint8_t  cell_addr = 2;
+uint8_t  cell_row = 1;
+uint8_t  cell_col = 2;
 uint8_t  goods_count = 3;
 uint8_t  deliverEn = 1;
 /* USER CODE END 4 */
@@ -417,7 +418,7 @@ void StartDefaultTask(void const * argument)
     if(deliverEn)
     {
       deliverEn = 0;
-      Deliver((uint16_t)cell_addr, goods_count);
+      Deliver(cell_row, cell_col, goods_count);
     }
   }
   /* USER CODE END 5 */ 
