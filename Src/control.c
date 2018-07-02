@@ -18,17 +18,17 @@ void Master_init(Master_TypeDef *m)
   m->Rx.OnCorrectDataReceive = OnDataReceive;
   m->Rx.OnErrorDataReceive = DoNothing;
 } 
-
+uint8_t timeoutcnt = 0;
 // 给单元体分配CAN总线ID和单元体地址Addr
 void AllocatingIdAndAddr(Master_TypeDef *m)
 {
-  /*同步信号0x03,告知所有单元体准备申请ID*/
+  /*同步信号,告知所有单元体准备申请ID*/
   hcan.pTxMsg->Data[0] = CELL_REQUEST_ENABLE;
   HAL_CAN_Transmit_IT(&hcan);    
   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET);   
   
   uint8_t loop = 1;
-  uint8_t timeoutcnt = 0;
+//  uint8_t timeoutcnt = 0;
   while(loop)
   {
     while(loop)
@@ -43,7 +43,7 @@ void AllocatingIdAndAddr(Master_TypeDef *m)
           timeoutcnt++;
           hcan.pTxMsg->Data[0] = CELL_ALLOCATE_ONE_LAYER_DONE;
           HAL_CAN_Transmit_IT(&hcan);   
-          break;
+          goto timeout;
         }
       }
       /*未超时，计数清零*/ 
@@ -67,10 +67,10 @@ void AllocatingIdAndAddr(Master_TypeDef *m)
       memset(hcan.pRxMsg->Data, 0, 8);
     }// end while
     
+    timeout:
     /*分配完一层，列复位，行加一*/
     m->CellColumn = 1;
     m->CellRow++;
-    
     /*连续超时2次以上，所有单元层分配完成*/
     if(timeoutcnt >= 2)
     {      

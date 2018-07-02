@@ -394,7 +394,7 @@ static void CAN_Filter_Init(void)
 uint8_t  cell_row = 1;
 uint8_t  cell_col = 2;
 uint8_t  goods_count = 3;
-uint8_t  deliverEn = 1;
+uint8_t  deliverEn = 0;
 /* USER CODE END 4 */
 
 /* StartDefaultTask function */
@@ -402,7 +402,7 @@ void StartDefaultTask(void const * argument)
 {
 
   /* USER CODE BEGIN 5 */
-  static int reEn = 0;
+  static int reEn = 1;
   
   /* Infinite loop */
   for(;;)

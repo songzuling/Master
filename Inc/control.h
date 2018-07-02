@@ -14,12 +14,13 @@ typedef struct
   uint32_t CellCanId;   /*分配给单元体的CANid*/
   uint8_t  CellRow;     /*给单元体的行编号*/
   uint16_t CellColumn;  /*给单元体的列编号*/
-  uint16_t CellAddr;    /*给单元体的编号（一维）*/
   RxDataTypedef Rx;     /**/
 }Master_TypeDef;
 
 enum{
   CELL_NONE = 0U,
+  CELL_RESET,                   /*复位单元体*/
+  CELL_RESET_SYSTEM,            /*复位单元体系统*/
   CELL_REQUEST_ENABLE,          /*使能请求ID*/
   CELL_REQUEST_ID,              /*请求分配ID*/
   CELL_ALLOCATE_ONE_LAYER_DONE, /*分配一层完成*/

@@ -4,7 +4,7 @@ stlinkfoundProbes=
 CStepIntDis=_ 0
 LeaveTargetRunning=_ 0
 [DebugChecksum]
-Checksum=971696030
+Checksum=563300017
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -41,6 +41,8 @@ ITMportsEnable=0
 ITMportsTermIO=0
 ITMportsLogFile=0
 ITMlogFile=$PROJ_DIR$\ITM.log
+[struct_types]
+Fmt0=Master_TypeDef-CellRow	3	0
 [array_types]
 Fmt0=uint8_t[8]	3	0
 [watch_formats]
@@ -49,6 +51,7 @@ Fmt1={W}42:deliverEn	3	0
 Fmt2={W}42:deliver_enable	3	0
 Fmt3={W}42:enenene	3	0
 Fmt4={W}42:goods_count	3	0
+Fmt5={W}42:timeoutcnt	3	0
 [Trace2]
 Enabled=0
 ShowSource=0
