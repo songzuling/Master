@@ -6,7 +6,7 @@ extern CAN_HandleTypeDef hcan;
 //static void Delay(uint32_t ms);
 
 
-void Master_init(Master_TypeDef *m)
+void Master_Init(Master_TypeDef *m)
 {
   /*单元体的地址从1开始分配*/
   m->CellColumn = 1;
@@ -18,15 +18,15 @@ void Master_init(Master_TypeDef *m)
   m->Rx.OnCorrectDataReceive = OnDataReceive;
   m->Rx.OnErrorDataReceive = DoNothing;
 } 
-uint8_t timeoutcnt = 0;
+
 // 给单元体分配CAN总线ID和单元体地址Addr
 void AllocatingIdAndAddr(Master_TypeDef *m)
 {
   /*同步信号,告知所有单元体准备申请ID*/
-  hcan.pTxMsg->Data[0] = CELL_REQUEST_ENABLE;
+  hcan.pTxMsg->Data[0] = CMD_MASTER_REQUEST_ENABLE;
   HAL_CAN_Transmit_IT(&hcan);    
   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET);   
-  
+  uint8_t timeoutcnt = 0;
   uint8_t loop = 1;
 //  uint8_t timeoutcnt = 0;
   while(loop)
@@ -35,13 +35,13 @@ void AllocatingIdAndAddr(Master_TypeDef *m)
     {      
       /*等待单元体的请求信号*/    
       uint32_t tickstart = HAL_GetTick();
-      while( hcan.pRxMsg->Data[0] != CELL_REQUEST_ID )
+      while( hcan.pRxMsg->Data[0] != CMD_CELL_REQUEST_ID )
       {        
         if( HAL_GetTick() - tickstart > 100 )
         {
           /*等待超时，一层单元层分配完成*/
           timeoutcnt++;
-          hcan.pTxMsg->Data[0] = CELL_ALLOCATE_ONE_LAYER_DONE;
+          hcan.pTxMsg->Data[0] = CMD_MASTER_ALLOCATE_ONE_LAYER_DONE;
           HAL_CAN_Transmit_IT(&hcan);   
           goto timeout;
         }
@@ -50,7 +50,7 @@ void AllocatingIdAndAddr(Master_TypeDef *m)
       timeoutcnt = 0;
       
       /*分配ID*/
-      hcan.pTxMsg->Data[0] = CELL_GET_ID;      
+      hcan.pTxMsg->Data[0] = CMD_MASTER_SEND_ID;      
       hcan.pTxMsg->Data[1] = (uint8_t) (0xFF & (m->CellCanId>>24) );
       hcan.pTxMsg->Data[2] = (uint8_t) (0xFF & (m->CellCanId>>16) );
       hcan.pTxMsg->Data[3] = (uint8_t) (0xFF & (m->CellCanId>>8) );
@@ -88,7 +88,7 @@ void AllocatingIdAndAddr(Master_TypeDef *m)
 // n   ：要出货的数量
 void Deliver(uint8_t row, uint16_t col, uint8_t n)
 {  
-  hcan.pTxMsg->Data[0] = CELL_DELIVER;
+  hcan.pTxMsg->Data[0] = CMD_MASTER_DELIVER;
   hcan.pTxMsg->Data[1] = 0;
   hcan.pTxMsg->Data[2] = 0;
   hcan.pTxMsg->Data[3] = 0;
